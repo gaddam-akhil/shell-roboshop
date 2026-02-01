@@ -23,6 +23,7 @@ VALIDATE() {
  else 
    echo -e "$2 .. $G SUCCESS $N" | tee -a $LOGS_FILES
  fi
+ 
 }
 
 cp mongo.repo  /etc/yum.repos.d/mongo.repo
