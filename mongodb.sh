@@ -23,10 +23,10 @@ VALIDATE() {
  else 
    echo -e "$2 .. $G SUCCESS $N" | tee -a $LOGS_FILES
  fi
- 
+
 }
 
-cp mongo.repo  /etc/yum.repos.d/mongo.repo
+cp mong.repo  /etc/yum.repos.d/mongo.repo
 VALIDATE $? "coping mongo repo"
 
 dnf install mongodb-org -y &>>$LOGS_FILES
