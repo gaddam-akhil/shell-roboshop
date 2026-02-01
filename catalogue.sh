@@ -8,6 +8,7 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.gaddam.online
 
 if [ $USER_ID -ne 0 ]; then
  echo -e "$R please run this script as root user access $N" | tee -a $LOGS_FILES
@@ -68,6 +69,14 @@ systemctl daemon-reload
 systemctl enable catalogue 
 systemctl start catalogue
 VALIDATE $? "connecting catalogue"
+
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+VALIDATE $? "setuping mongo repo"
+
+dnf install mongodb-mongosh -y
+VALIDATE $? "installing mongodb client server"
+
+mongosh --host $MONGODB_HOST </app/db/master-data.js
 
 
 
