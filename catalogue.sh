@@ -70,13 +70,13 @@ systemctl enable catalogue
 systemctl start catalogue
 VALIDATE $? "connecting catalogue"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILES
 VALIDATE $? "setuping mongo repo"
 
-dnf install mongodb-mongosh -y
+dnf install mongodb-mongosh -y &>>$LOGS_FILES
 VALIDATE $? "installing mongodb client server"
 
-INDEX=mongosh --host $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 if [ $INDEX -le 0 ]; then
 mongosh --host $MONGODB_HOST </app/db/master-data.js
 VALIDATE $? "Loadin products"
@@ -84,7 +84,7 @@ else
 echo -e "products already loaded....$Y skipping $N"
 fi
 
-systemctl restart catalogue
+systemctl restart catalogue &>>$LOGS_FILES
 VALIDATE $? "restarting catalogue"
 
 
