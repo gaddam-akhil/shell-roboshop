@@ -5,8 +5,8 @@ AMI_ID="ami-0220d79f3f480ecf5"
 
 for INSTANCE in $@
 do
-InstanceId=$( aws ec2 run-instances 
-     --image-id $AMI_ID \
+InstanceId=$( aws ec2 run-instances \
+    --image-id $AMI_ID \
     --instance-type "t3.micro" \
     --security-group-ids $SG_ID \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$INSTANCE}]" \
