@@ -21,11 +21,12 @@ if [ $INSTANCE == "frontend" ]; then
      --output text
  )
 else
-    IP=$ (
+    IP=$(
         aws ec2 describe-instances \
      --instance-ids $InstanceId \
      --query 'Reservations[*].Instances[*].PrivateIpAddress' \
      --output text
     )
  fi
+ echo " IP ADDRESS - $IP"
 done
