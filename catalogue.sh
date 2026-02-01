@@ -42,8 +42,8 @@ else
    echo -e "Roboshope user already exit.....$Y skipping $N" 
 fi   
 
-mkdir -p /app 
-VALIDATE $? "creating a app directory" &>>$LOGS_FILES
+mkdir -p /app &>>$LOGS_FILES
+VALIDATE $? "creating a app directory"
 
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILES
 VALIDATE $? "downloading catalogue code"
