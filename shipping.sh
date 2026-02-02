@@ -75,11 +75,16 @@ VALIDATE $? "ENABLING AND STARTING"
 dnf install mysql -y &>>$LOGS_FILES
 VALIDATE $? "Installing Mysql"
 
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities'
 
+if [ $? -ne 0 ]; then
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql 
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
 VALIDATE $? "LOADING SCHEMAS"
+else
+echo -e "data is already loaded.... $Y skipping $N"
+fi
 
 systemctl enable shipping &>>$LOGS_FILES
 systemctl restart shipping &>>$LOGS_FILES
