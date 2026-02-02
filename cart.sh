@@ -47,8 +47,8 @@ fi
 mkdir -p /app &>>$LOGS_FILES
 VALIDATE $? "creating a app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILES
-VALIDATE $? "downloading catalogue code"
+curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip &>>$LOGS_FILES
+VALIDATE $? "downloading cart code"
 
 cd /app &>>$LOGS_FILES
 VALIDATE $? "moving to app directory"
@@ -56,38 +56,16 @@ VALIDATE $? "moving to app directory"
 rm -rf /app/* &>>$LOGS_FILES
 VALIDATE $? "removing the existing code"
 
-unzip /tmp/catalogue.zip &>>$LOGS_FILES
+unzip /tmp/cart.zip &>>$LOGS_FILES
 VALIDATE $? "unziping the code"
 
 npm install &>>$LOGS_FILES
 VALIDATE $? "installing dependancies"
 
-cp  $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILES
+cp  $SCRIPT_DIR/cart.service /etc/systemd/system/cart.service &>>$LOGS_FILES
 VALIDATE $? "created systemctl service"
 
 systemctl daemon-reload &>>$LOGS_FILES
-systemctl enable catalogue &>>$LOGS_FILES
-systemctl start catalogue &>>$LOGS_FILES
-VALIDATE $? "connecting catalogue"
-
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILES
-VALIDATE $? "setuping mongo repo"
-
-dnf install mongodb-mongosh -y &>>$LOGS_FILES
-VALIDATE $? "installing mongodb client server"
-
-INDEX=$(mongosh --host $MONGODB_HOST --quiet --eval 'db.getMongo().getDBNames().indexOf("catalogue")') &>>$LOGS_FILES
-if [ $INDEX -le 0 ]; then
-mongosh --host $MONGODB_HOST </app/db/master-data.js
-VALIDATE $? "Loadin products"
-else
-echo -e "products already loaded....$Y skipping $N"
-fi
-
-systemctl restart catalogue &>>$LOGS_FILES
-VALIDATE $? "restarting catalogue"
-
-
-
-
-
+systemctl enable cart &>>$LOGS_FILES
+systemctl start cart &>>$LOGS_FILES
+VALIDATE $? "connecting cart"
