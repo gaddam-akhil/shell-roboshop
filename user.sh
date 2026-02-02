@@ -41,7 +41,7 @@ else
    echo -e "Roboshop user already exit.....$Y skipping $N" 
 fi 
 
-mkdir /app &>>$LOGS_FILES
+mkdir -p /app &>>$LOGS_FILES
 VALIDATE $? "creating a app dir"
 
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
