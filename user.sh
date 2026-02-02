@@ -7,7 +7,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-$SCRIPT_DIR=$PWD
+SCRIPT_DIR=$PWD
 
 if [ $USER_ID -ne 0 ]; then
  echo -e "$R please run this script as root user access $N" | tee -a $LOGS_FILES
@@ -25,11 +25,11 @@ mkdir -p $LOGS_FOLDER
  fi
 }
 
-dnf module disable nodejs -y
-dnf module enable nodejs:20 -y
+dnf module disable nodejs -y &>>$LOGS_FILES
+dnf module enable nodejs:20 -y &>>$LOGS_FILES
 VALIDATE $? "ENABLE NODEJS"
 
-dnf install nodejs -y
+dnf install nodejs -y &>>$LOGS_FILES
 VALIDATE $? "Instal Nodejs"
 
 
@@ -41,32 +41,32 @@ else
    echo -e "Roboshop user already exit.....$Y skipping $N" 
 fi 
 
-mkdir /app 
+mkdir /app &>>$LOGS_FILES
 VALIDATE $? "creating a app dir"
 
 curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
 VALIDATE $? "Downloding User code"
 
-cd /app 
+cd /app &>>$LOGS_FILES
 VALIDATE $? "MOVE TO APP DIR"
 
 rm -rf /app/* &>>$LOGS_FILES
 VALIDATE $? "removing the existing code"
 
-unzip /tmp/user.zip
+unzip /tmp/user.zip &>>$LOGS_FILES
 VALIDATE $? "UNZIPING THE CODE"
 
-npm install
+npm install &>>$LOGS_FILES
 VALIDATE $? "Installing BULD TOOL"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
 VALIDATE $? "ENABLEING SYTEMCTL SERVICE"
 
-systemctl daemon-reload
+systemctl daemon-reload &>>$LOGS_FILES
 VALIDATE $? "RELODING"
 
 systemctl enable user 
-systemctl start user
+systemctl start user &>>$LOGS_FILES
 VALIDATE $? "ENABLE AND START"
 
 
