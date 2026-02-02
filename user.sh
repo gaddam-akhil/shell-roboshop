@@ -59,8 +59,11 @@ VALIDATE $? "UNZIPING THE CODE"
 npm install &>>$LOGS_FILES
 VALIDATE $? "Installing BULD TOOL"
 
+# cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
+# VALIDATE $? "ENABLEING SYTEMCTL SERVICE"
+
 cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
-VALIDATE $? "ENABLEING SYTEMCTL SERVICE"
+VALIDATE $? "created systemctl service"
 
 systemctl daemon-reload &>>$LOGS_FILES
 VALIDATE $? "RELODING"
