@@ -17,61 +17,62 @@ fi
 
 mkdir -p $LOGS_FOLDER
 
-   VALIDATE() {
+VALIDATE() {
  if [ $1 -ne 0 ]; then
    echo -e "$2 .... $R FAILURE $N" | tee -a $LOGS_FILES
    exit 1
  else 
    echo -e "$2 .. $G SUCCESS $N" | tee -a $LOGS_FILES
  fi
+
 }
 
 dnf module disable nodejs -y &>>$LOGS_FILES
+VALIDATE $? "module disabling"
+
 dnf module enable nodejs:20 -y &>>$LOGS_FILES
-VALIDATE $? "ENABLE NODEJS"
+VALIDATE $? "enable nodejs:20"
 
-dnf install nodejs -y &>>$LOGS_FILES
-VALIDATE $? "Instal Nodejs"
-
+dnf install nodejs -y
+VALIDATE $? "installing nodejs" &>>$LOGS_FILES
 
 id roboshop &>>$LOGS_FILES
 if [ $? -ne 0 ]; then
    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILES
    VALIDATE $? "creating system user"
 else 
-   echo -e "Roboshop user already exit.....$Y skipping $N" 
-fi 
+   echo -e "Roboshope user already exit.....$Y skipping $N" 
+fi   
 
 mkdir -p /app &>>$LOGS_FILES
-VALIDATE $? "creating a app dir"
+VALIDATE $? "creating a app directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
-VALIDATE $? "Downloding User code"
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOGS_FILES
+VALIDATE $? "downloading user code"
 
 cd /app &>>$LOGS_FILES
-VALIDATE $? "MOVE TO APP DIR"
+VALIDATE $? "moving to app directory"
 
 rm -rf /app/* &>>$LOGS_FILES
 VALIDATE $? "removing the existing code"
 
 unzip /tmp/user.zip &>>$LOGS_FILES
-VALIDATE $? "UNZIPING THE CODE"
+VALIDATE $? "unziping the code"
 
 npm install &>>$LOGS_FILES
-VALIDATE $? "Installing BULD TOOL"
+VALIDATE $? "installing dependancies"
 
-# cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
-# VALIDATE $? "ENABLEING SYTEMCTL SERVICE"
-
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
+cp  $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILES
 VALIDATE $? "created systemctl service"
 
 systemctl daemon-reload &>>$LOGS_FILES
-VALIDATE $? "RELODING"
-
-systemctl enable user 
+systemctl enable user &>>$LOGS_FILES
 systemctl start user &>>$LOGS_FILES
-VALIDATE $? "ENABLE AND START"
+VALIDATE $? "connecting user"
+
+
+
+ 
 
 
 
